@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distance Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <label for="dimensions">Choose Dimensions (1-4):</label>
+    <input type="number" id="dimensions" min="1" max="4" placeholder="Enter dimensions">
+
+    <div id="pointInputs"></div>
+
+    <button onclick="calculateDistance()">Calculate Distance</button>
+
+    <div id="result"></div>
+
+    <script>
+        function createPointInputs() {
+            const dimensions = parseInt(document.getElementById('dimensions').value);
+            const pointInputsContainer = document.getElementById('pointInputs');
+            pointInputsContainer.innerHTML = '';
+
+            for (let i = 1; i <= dimensions; i++) {
+                const inputElement = document.createElement('input');
+                inputElement.type = 'text';
+                inputElement.placeholder = `Enter Point ${i}`;
+                inputElement.id = `point${i}`;
+                pointInputsContainer.appendChild(inputElement);
+            }
+        }
+
+        function calculateDistance() {
+            const dimensions = parseInt(document.getElementById('dimensions').value);
+            const pointInputs = Array.from({ length: dimensions }, (_, i) =>
+                parseFloat(document.getElementById(`point${i + 1}`).value)
+            );
+
+            if (pointInputs.some(isNaN)) {
+                alert('Please enter valid numerical values for all points');
+                return;
+            }
+
+            const squaredSum = pointInputs.reduce((sum, val) => sum + val ** 2, 0);
+            const result = Math.sqrt(squaredSum);
+
+            document.getElementById('result').innerHTML = `Euclidean Distance: ${result.toFixed(2)}`;
+        }
+
+        document.getElementById('dimensions').addEventListener('input', createPointInputs);
+        createPointInputs(); // Initial creation
+    </script>
+</body>
+</html>
