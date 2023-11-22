@@ -65,28 +65,61 @@
 <body>
 
 <header>
-  <h1>Distance Calculator</h1>
+  <h1 id="title">Distance Calculator</h1>
+  <div id="language-selector">
+    <select onchange="changeLanguage()">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <!-- Add more language options as needed -->
+    </select>
+  </div>
 </header>
 
 <main>
-  <label for="point1x">Point 1 (x):</label>
+  <label for="point1x" id="point1x-label"></label>
   <input type="text" id="point1x" required pattern="-?\d+(\.\d+)?" placeholder="Enter x-coordinate" required>
-  <label for="point1y">Point 1 (y):</label>
+  <label for="point1y" id="point1y-label"></label>
   <input type="text" id="point1y" required pattern="-?\d+(\.\d+)?" placeholder="Enter y-coordinate" required>
   <br>
-  <label for="point2x">Point 2 (x):</label>
+  <label for="point2x" id="point2x-label"></label>
   <input type="text" id="point2x" required pattern="-?\d+(\.\d+)?" placeholder="Enter x-coordinate" required>
-  <label for="point2y">Point 2 (y):</label>
+  <label for="point2y" id="point2y-label"></label>
   <input type="text" id="point2y" required pattern="-?\d+(\.\d+)?" placeholder="Enter y-coordinate" required>
   <br>
-  <button onclick="calculateDistance()">Calculate Distance</button>
+  <button onclick="calculateDistance()" id="calculate-button"></button>
   <div id="result"></div>
   <canvas id="myCanvas" width="400" height="400"></canvas>
-
-  
 </main>
 
 <script>
+  function changeLanguage() {
+    const languageSelector = document.getElementById('language-selector');
+    const selectedLanguage = languageSelector.querySelector('select').value;
+
+    // Use a switch statement to set content based on the selected language
+    switch (selectedLanguage) {
+      case 'en':
+        document.getElementById('title').innerText = 'Distance Calculator';
+        document.getElementById('point1x-label').innerText = 'Point 1 (x):';
+        document.getElementById('point1y-label').innerText = 'Point 1 (y):';
+        document.getElementById('point2x-label').innerText = 'Point 2 (x):';
+        document.getElementById('point2y-label').innerText = 'Point 2 (y):';
+        document.getElementById('calculate-button').innerText = 'Calculate Distance';
+        break;
+      case 'es':
+        document.getElementById('title').innerText = 'Calculadora de Distancia';
+        document.getElementById('point1x-label').innerText = 'Punto 1 (x):';
+        document.getElementById('point1y-label').innerText = 'Punto 1 (y):';
+        document.getElementById('point2x-label').innerText = 'Punto 2 (x):';
+        document.getElementById('point2y-label').innerText = 'Punto 2 (y):';
+        document.getElementById('calculate-button').innerText = 'Calcular Distancia';
+        break;
+      // Add more cases for additional languages
+      default:
+        break;
+    }
+  }
+
   function calculateDistance() {
     // Get the input values
     const x1 = parseFloat(document.getElementById('point1x').value);
@@ -94,16 +127,17 @@
     const x2 = parseFloat(document.getElementById('point2x').value);
     const y2 = parseFloat(document.getElementById('point2y').value);
 
-    //check if empty
+    // Check if empty
     if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
       alert("Please enter a number");
       return;
     }
+
     // Calculate the distance
     const distance = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
 
     // Display the distance
-    document.getElementById('result').innerHTML = `The distance between the two points is: ${distance.toFixed(2)}CM`;
+    document.getElementById('result').innerHTML = `The distance between the two points is: ${distance.toFixed(2)}`;
 
     // Draw on canvas
     const canvas = document.getElementById('myCanvas');
@@ -134,6 +168,17 @@
     ctx.lineTo(centerX + x2, centerY - y2);
     ctx.stroke();
   }
+
+  // Initialize language based on browser or system language
+  const userLanguage = navigator.language.substring(0, 2);
+  const languageSelector = document.getElementById('language-selector');
+  const selectElement = languageSelector.querySelector('select');
+
+  // Set the selected language in the dropdown
+  selectElement.value = userLanguage;
+
+  // Change the language based on the user's preference
+  changeLanguage();
 </script>
 
 </body>
