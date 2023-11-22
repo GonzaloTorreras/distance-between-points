@@ -1,134 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distance Calculator</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-
-        #container {
-            width: 80%;
-            max-width: 400px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        select,
-        input {
-            width: 100%;
-            height: 40px;
-            margin-bottom: 16px;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            font-size: 14px;
-            color: #333;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distance Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+    main {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #555;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #result {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div id="container">
-        <label for="dimensions">Choose Dimensions:</label>
-        <select id="dimensions">
-            <option value="1">1D</option>
-            <option value="2" selected>2D</option>
-            <option value="3">3D</option>
-            <option value="4">4D</option>
-        </select>
 
-        <div id="pointInputs"></div>
+<header>
+  <h1>Distance Calculator</h1>
+</header>
 
-        <button onclick="calculateDistance()">Calculate Distance</button>
+<main>
+  <label for="point1x">Point 1 (x):</label>
+  <input type="text" id="point1x" required pattern="-?\d+(\.\d+)?" placeholder="Enter x-coordinate" required>
+  <label for="point1y">Point 1 (y):</label>
+  <input type="text" id="point1y" required pattern="-?\d+(\.\d+)?" placeholder="Enter y-coordinate" required>
+  <br>
+  <label for="point2x">Point 2 (x):</label>
+  <input type="text" id="point2x" required pattern="-?\d+(\.\d+)?" placeholder="Enter x-coordinate" required>
+  <label for="point2y">Point 2 (y):</label>
+  <input type="text" id="point2y" required pattern="-?\d+(\.\d+)?" placeholder="Enter y-coordinate" required>
+  <br>
+  <button onclick="calculateDistance()">Calculate Distance</button>
+  <div id="result"></div>
+  <canvas id="myCanvas" width="400" height="400"></canvas>
 
-        <div id="result"></div>
-    </div>
+  
+</main>
 
-    <script>
-        function createPointInputs() {
-            const dimensions = parseInt(document.getElementById('dimensions').value);
-            const pointInputsContainer = document.getElementById('pointInputs');
-            const existingPointInputs = pointInputsContainer.getElementsByTagName('input');
-            const existingDimensions = existingPointInputs.length;
+<script>
+  function calculateDistance() {
+    // Get the input values
+    const x1 = parseFloat(document.getElementById('point1x').value);
+    const y1 = parseFloat(document.getElementById('point1y').value);
+    const x2 = parseFloat(document.getElementById('point2x').value);
+    const y2 = parseFloat(document.getElementById('point2y').value);
 
-            if (dimensions < existingDimensions) {
-                // Remove unnecessary input fields when decreasing dimensionality
-                for (let i = existingDimensions; i > dimensions; i--) {
-                    pointInputsContainer.removeChild(existingPointInputs[i - 1]);
-                }
-            } else if (dimensions > existingDimensions) {
-                // Add new input fields when increasing dimensionality
-                for (let i = existingDimensions + 1; i <= dimensions; i++) {
-                    const inputElement = document.createElement('input');
-                    inputElement.type = 'text';
-                    inputElement.placeholder = `Enter Point ${i}`;
-                    inputElement.id = `point${i}`;
-                    pointInputsContainer.appendChild(inputElement);
-                }
-            }
-        }
+    //check if empty
+    if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
+      alert("Please enter a number");
+      return;
+    }
+    // Calculate the distance
+    const distance = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
 
-        function calculateDistance() {
-            const dimensions = parseInt(document.getElementById('dimensions').value);
-            const pointInputs = Array.from({ length: dimensions }, (_, i) =>
-                parseFloat(document.getElementById(`point${i + 1}`).value)
-            );
+    // Display the distance
+    document.getElementById('result').innerHTML = `The distance between the two points is: ${distance.toFixed(2)}`;
 
-            if (pointInputs.some(isNaN)) {
-                alert('Please enter valid numerical values for all points');
-                return;
-            }
+    // Draw on canvas
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const squaredSum = pointInputs.reduce((sum, val) => sum + val ** 2, 0);
-            const result = Math.sqrt(squaredSum);
+    // Center coordinates
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
 
-            document.getElementById('result').innerHTML = `Euclidean Distance: ${result.toFixed(2)}`;
-        }
+    // Draw points centered on the canvas
+    ctx.fillStyle = 'blue';
+    ctx.beginPath();
+    ctx.arc(centerX + x1, centerY - y1, 5, 0, 2 * Math.PI);
+    ctx.fill();
 
-        document.getElementById('dimensions').addEventListener('change', createPointInputs);
-        createPointInputs(); // Initial creation
-    </script>
+    ctx.beginPath();
+    ctx.arc(centerX + x2, centerY - y2, 5, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Draw line centered on the canvas
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX + x1, centerY - y1);
+    ctx.lineTo(centerX + x2, centerY - y2);
+    ctx.stroke();
+  }
+</script>
+
 </body>
 </html>
